@@ -27,7 +27,8 @@ Route::middleware('auth')
     ->group(function () {
         Route::get('/', [DashboardController::class, 'index'])->name('dashboard');
 
-        Route::resource('posts', PostController::class);
+        //utilizza slug come parametro al  posto dell'id
+        Route::resource('posts', PostController::class)->parameters(['posts'=>'post:slug']);
     });
 
 require __DIR__ . '/auth.php';
