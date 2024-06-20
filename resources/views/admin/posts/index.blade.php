@@ -25,7 +25,8 @@
                     <th scope="row">{{ $curPost->id }}</th>
                     <td>{{ $curPost->title }}</td>
                     <td>{{ $curPost->slug }}</td>
-                    <td> <a class='btn btn-info' href="{{ route('admin.posts.show',['post'=>$curPost->slug])}}">Dettagli</a> 
+                    <td> <a class='btn btn-info' href="{{ route('admin.posts.show',['post'=>$curPost->slug])}}">Dettagli</a>
+                     <a class='btn btn-info' href="{{ route('admin.posts.edit',['post'=>$curPost->slug])}}">Modifica</a>
                         <form action="{{route('admin.posts.destroy', ['post'=>$curPost->slug])}}" method="POST">
                             @csrf
                             @method('DELETE')
