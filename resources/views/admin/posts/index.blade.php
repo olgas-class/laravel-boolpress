@@ -3,6 +3,13 @@
 @section('content')
     <h1>Lista dei Posts</h1>
     <a class="btn btn-success" href="{{ route('admin.posts.create') }}">Crea</a>
+
+    @if (session('message'))
+        <div class="alert alert-success">
+            {{session('message')}}
+        </div>
+    @endif
+
     <table class="table">
         <thead>
             <tr>
@@ -18,7 +25,14 @@
                     <th scope="row">{{ $curPost->id }}</th>
                     <td>{{ $curPost->title }}</td>
                     <td>{{ $curPost->slug }}</td>
-                    <td> <a class='btn btn-info' href="{{ route('admin.posts.show',['post'=>$curPost->slug])}}">Dettagli</a> </td>
+                    <td> <a class='btn btn-info' href="{{ route('admin.posts.show',['post'=>$curPost->slug])}}">Dettagli</a> 
+                        <form action="{{route('admin.posts.destroy', ['post'=>$curPost->slug])}}" method="POST">
+                            @csrf
+                            @method('DELETE')
+                            <button type="submit" class="btn btn-danger">Elimina</button>
+                        </form>
+                    </td>
+                    
                 </tr>
             @endforeach
 
