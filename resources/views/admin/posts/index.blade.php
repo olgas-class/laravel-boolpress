@@ -2,7 +2,7 @@
 
 @section('content')
     <h1>Lista dei Posts</h1>
-
+    <a class="btn btn-success" href="{{ route('admin.posts.create') }}">Crea</a>
     <table class="table">
         <thead>
             <tr>
