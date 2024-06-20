@@ -18,7 +18,7 @@
                     <th scope="row">{{ $curPost->id }}</th>
                     <td>{{ $curPost->title }}</td>
                     <td>{{ $curPost->slug }}</td>
-                    <td>  </td>
+                    <td> <a class='btn btn-info' href="{{ route('admin.posts.show',['post'=>$curPost->slug])}}">Dettagli</a> </td>
                 </tr>
             @endforeach
 
