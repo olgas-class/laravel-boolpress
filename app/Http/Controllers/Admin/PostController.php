@@ -7,6 +7,7 @@ use App\Http\Requests\StorePostRequest;
 use App\Http\Requests\UpdatePostRequest;
 use App\Models\Post;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Str;
 
 class PostController extends Controller {
@@ -37,6 +38,24 @@ class PostController extends Controller {
         // ]);
         // $data = $request->all();
         $data = $request->validated();
+
+        // Controllo se c'è il file di cover_image nel request
+        if ($request->hasFile('cover_image')) {
+            // Salvo il file nel storage
+            $image_path = Storage::put('post_images', $request->cover_image);
+            // salvo il path del file nei dati da inserire nel daabase
+            $data['cover_image'] = $image_path;
+
+            /**
+             * $data = [
+             *  'title' => 'titolo,
+             *  'content' => 'contenuto',
+             *  'cover_image' => 'percorso immagine'
+             * ]
+             */
+        }
+
+
         $post = new Post();
         $post->fill($data);
         $post->slug = Str::slug($request->title);
@@ -79,6 +98,21 @@ class PostController extends Controller {
     public function update(UpdatePostRequest $request, Post $post) {
         $data = $request->validated();
         $data['slug'] = Str::slug($data['title']);
+
+        // Se nel request c'è il file dell'immagine
+        //  Se il post aveva l'immagine
+        //      la cancello
+        //  salvo la nuova immagine 
+        //  salvo il percorso nei data da aggiornare
+        if ($request->hasFile('cover_image')) {
+            if ($post->cover_image) {
+                Storage::delete($post->cover_image);
+            }
+            $image_path = Storage::put('post_images', $request->cover_image);
+            $data['cover_image'] = $image_path;
+        }
+
+
         $post->update($data);
         return redirect()->route('admin.posts.show', $post->slug)->with('message', 'post ' . $post->title . ' è stato modificato');
     }
@@ -87,6 +121,11 @@ class PostController extends Controller {
      * Remove the specified resource from storage.
      */
     public function destroy(Post $post) {
+        // Se il post ha l'immagine, cancelliamola
+        if ($post->cover_image) {
+            Storage::delete($post->cover_image);
+        }
+
         $post->delete();
         return redirect()->route('admin.posts.index')->with('message', 'post ' . $post->title . ' è stato cancellato');
     }
